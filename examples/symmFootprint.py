@@ -9,6 +9,7 @@ import lsst.afw.detection as afwDet
 import lsst.afw.image as afwImg
 import lsst.meas.deblender as measDeblend
 
+
 def main():
     butils = measDeblend.BaselineUtilsF
 
@@ -40,7 +41,7 @@ def main():
 
         #plt.plot([364], [111], 'r.')
         #plt.plot([367], [117], 'r.')
-        #plt.savefig('sfoot4.png')
+        # plt.savefig('sfoot4.png')
 
 
 def buildExample():
@@ -729,6 +730,7 @@ def buildExample():
     foot.normalize()
     return foot
 
+
 def buildExample2():
     foot = afwDet.Footprint()
     foot.addSpan(110, 324, 372)
@@ -1007,4 +1009,4 @@ def buildExample2():
 
 if __name__ == '__main__':
     main()
-    
+

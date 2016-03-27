@@ -39,7 +39,8 @@ class DeblendAndMeasureConfig(pexConfig.Config):
     doWriteHeavyFootprintsInSources = pexConfig.Field(dtype=bool, default=False,
                                                       doc = "Include HeavyFootprint data in source table?")
 
-    sourceOutputFile = pexConfig.Field(dtype=str, default=None, doc="Write sources to given filename (default: use butler)", optional=True)
+    sourceOutputFile = pexConfig.Field(
+        dtype=str, default=None, doc="Write sources to given filename (default: use butler)", optional=True)
 
     deblend = pexConfig.ConfigurableField(
         target = SourceDeblendTask,
@@ -49,7 +50,7 @@ class DeblendAndMeasureConfig(pexConfig.Config):
         target = SourceMeasurementTask,
         doc = "Final source measurement on low-threshold detections",
     )
-    
+
 
 class DeblendAndMeasureTask(pipeBase.CmdLineTask):
     ConfigClass = DeblendAndMeasureConfig
@@ -69,9 +70,9 @@ class DeblendAndMeasureTask(pipeBase.CmdLineTask):
         print 'Calexp:', calexp
         print 'srcs:', srcs
 
-        ## FIXME -- this whole mapping business is very fragile -- it
-        ## seems to fail, eg, if you don't set "-c
-        ## doMeasurement=False" when creating the input 'srcs' list.
+        # FIXME -- this whole mapping business is very fragile -- it
+        # seems to fail, eg, if you don't set "-c
+        # doMeasurement=False" when creating the input 'srcs' list.
 
         mapper = afwTable.SchemaMapper(srcs.getSchema())
         # map all the existing fields
@@ -97,7 +98,7 @@ class DeblendAndMeasureTask(pipeBase.CmdLineTask):
 
         if self.config.doDeblend:
             self.deblend.run(calexp, srcs, calexp.getPsf())
-        
+
         if self.config.doMeasurement:
             self.measurement.run(calexp, srcs)
 

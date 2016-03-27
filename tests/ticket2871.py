@@ -34,6 +34,7 @@ import lsst.meas.algorithms as algorithms
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+
 class DeblendTestCase(unittest.TestCase):
     """A test case for deblending"""
 
@@ -55,7 +56,7 @@ class DeblendTestCase(unittest.TestCase):
 
         self.checkDeblender()
         xGood, yGood = 57, 86
-        xBad, yBad = 0, 0 # Required to be in image so we can evaluate the PSF; will put neighbour just outside
+        xBad, yBad = 0, 0  # Required to be in image so we can evaluate the PSF; will put neighbour just outside
         flux = 100.0
         dims = afwGeom.Extent2I(128, 128)
 
@@ -101,6 +102,7 @@ class DeblendTestCase(unittest.TestCase):
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+
 def suite():
     """Returns a suite containing all the test cases in this module."""
     tests.init()
@@ -109,6 +111,7 @@ def suite():
     suites += unittest.makeSuite(DeblendTestCase)
     suites += unittest.makeSuite(tests.MemoryTestCase)
     return unittest.TestSuite(suites)
+
 
 def run(exit = False):
     """Run the tests"""

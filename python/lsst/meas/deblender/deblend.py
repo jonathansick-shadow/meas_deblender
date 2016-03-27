@@ -33,6 +33,7 @@ import lsst.afw.table as afwTable
 
 __all__ = 'SourceDeblendConfig', 'SourceDeblendTask'
 
+
 class SourceDeblendConfig(pexConf.Config):
 
     edgeHandling = pexConf.ChoiceField(
@@ -42,8 +43,8 @@ class SourceDeblendConfig(pexConf.Config):
             'clip': 'Clip the template at the edge AND the mirror of the edge.',
             'ramp': 'Ramp down flux at the image edge by the PSF',
             'noclip': 'Ignore the edge when building the symmetric template.',
-            }
-        )
+        }
+    )
 
     strayFluxToPointSources = pexConf.ChoiceField(
         doc='When the deblender should attribute stray flux to point sources',
@@ -53,8 +54,8 @@ class SourceDeblendConfig(pexConf.Config):
             'always': 'Always',
             'never': ('Never; stray flux will not be attributed to any deblended child '
                       'if the deblender thinks all peaks look like point sources'),
-            }
-        )
+        }
+    )
 
     findStrayFlux = pexConf.Field(dtype=bool, default=True,
                                   doc='Find stray flux---flux not claimed by any child in the deblender.')
@@ -72,8 +73,8 @@ class SourceDeblendConfig(pexConf.Config):
             'nearest-footprint': ('Assign 100% to the nearest footprint (using L-1 norm aka '
                                   'Manhattan distance)'),
             'trim': ('Shrink the parent footprint to pixels that are not assigned to children')
-            }
-        )
+        }
+    )
 
     clipStrayFluxFraction = pexConf.Field(dtype=float, default=0.001,
                                           doc=('When splitting stray flux, clip fractions below '
@@ -94,8 +95,8 @@ class SourceDeblendConfig(pexConf.Config):
                                      doc=("Maximum area for footprints before they are ignored as large; "
                                           "non-positive means no threshold applied"))
     maxFootprintSize = pexConf.Field(dtype=int, default=0,
-                                    doc=("Maximum linear dimension for footprints before they are ignored "
-                                         "as large; non-positive means no threshold applied"))
+                                     doc=("Maximum linear dimension for footprints before they are ignored "
+                                          "as large; non-positive means no threshold applied"))
     minFootprintAxisRatio = pexConf.Field(dtype=float, default=0.0,
                                           doc=("Minimum axis ratio for footprints before they are ignored "
                                                "as large; non-positive means no threshold applied"))
@@ -103,8 +104,8 @@ class SourceDeblendConfig(pexConf.Config):
                                      doc="Mask name for footprints not deblended, or None")
 
     tinyFootprintSize = pexConf.RangeField(dtype=int, default=2, min=2, inclusiveMin=True,
-                                      doc=('Footprints smaller in width or height than this value will '
-                                           'be ignored; minimum of 2 due to PSF gradient calculation.'))
+                                           doc=('Footprints smaller in width or height than this value will '
+                                                'be ignored; minimum of 2 due to PSF gradient calculation.'))
 
     propagateAllPeaks = pexConf.Field(dtype=bool, default=False,
                                       doc=('Guarantee that all peaks produce a child source.'))
@@ -119,14 +120,15 @@ class SourceDeblendConfig(pexConf.Config):
         default = {},
         doc = ("Mask planes with the corresponding limit on the fraction of masked pixels. "
                "Sources violating this limit will not be deblended."),
-        )
+    )
 
-## \addtogroup LSST_task_documentation
-## \{
-## \page SourceDeblendTask
-## \ref SourceDeblendTask_ "SourceDeblendTask"
-## \copybrief SourceDeblendTask
-## \}
+# \addtogroup LSST_task_documentation
+# \{
+# \page SourceDeblendTask
+# \ref SourceDeblendTask_ "SourceDeblendTask"
+# \copybrief SourceDeblendTask
+# \}
+
 
 class SourceDeblendTask(pipeBase.Task):
     """!
@@ -175,9 +177,9 @@ class SourceDeblendTask(pipeBase.Task):
         self.psfKey = schema.addField('deblend_deblendedAsPsf', type='Flag',
                                       doc='Deblender thought this source looked like a PSF')
         self.psfCenterKey = afwTable.Point2DKey.addFields(schema, 'deblend_psfCenter',
-                                         'If deblended-as-psf, the PSF centroid', "pixels")
+                                                          'If deblended-as-psf, the PSF centroid', "pixels")
         self.psfFluxKey = schema.addField('deblend_psfFlux', type='D',
-                                           doc='If deblended-as-psf, the PSF flux')
+                                          doc='If deblended-as-psf, the PSF flux')
         self.tooManyPeaksKey = schema.addField('deblend_tooManyPeaks', type='Flag',
                                                doc='Source had too many peaks; '
                                                'only the brightest were included')
@@ -191,7 +193,7 @@ class SourceDeblendTask(pipeBase.Task):
                                                     doc="Deblending failed on source")
 
         self.deblendSkippedKey = schema.addField('deblend_skipped', type='Flag',
-                                                doc="Deblender skipped this source")
+                                                 doc="Deblender skipped this source")
 
         self.deblendRampedTemplateKey = schema.addField(
             'deblend_rampedTemplate', type='Flag',
@@ -208,8 +210,8 @@ class SourceDeblendTask(pipeBase.Task):
             doc=('This source was assigned some stray flux'))
 
         self.log.logdebug('Added keys to schema: %s' % ", ".join(str(x) for x in (
-                    self.nChildKey, self.psfKey, self.psfCenterKey, self.psfFluxKey,
-                    self.tooManyPeaksKey, self.tooBigKey)))
+            self.nChildKey, self.psfKey, self.psfCenterKey, self.psfFluxKey,
+            self.tooManyPeaksKey, self.tooBigKey)))
 
     @pipeBase.timeMethod
     def run(self, exposure, sources, psf):
@@ -254,7 +256,7 @@ class SourceDeblendTask(pipeBase.Task):
 
         n0 = len(srcs)
         nparents = 0
-        for i,src in enumerate(srcs):
+        for i, src in enumerate(srcs):
             #t0 = time.clock()
 
             fp = src.getFootprint()
@@ -305,7 +307,7 @@ class SourceDeblendTask(pipeBase.Task):
                     patchEdges=(self.config.edgeHandling == 'noclip'),
                     tinyFootprintSize=self.config.tinyFootprintSize,
                     clipStrayFluxFraction=self.config.clipStrayFluxFraction,
-                    )
+                )
                 if self.config.catchFailures:
                     src.set(self.deblendFailedKey, False)
             except Exception as e:
@@ -327,7 +329,8 @@ class SourceDeblendTask(pipeBase.Task):
                     if not self.config.propagateAllPeaks:
                         # Don't care
                         continue
-                    # We need to preserve the peak: make sure we have enough info to create a minimal child src
+                    # We need to preserve the peak: make sure we have enough info to create a
+                    # minimal child src
                     self.log.logdebug("Peak at (%i,%i) failed.  Using minimal default info for child." %
                                       (pks[j].getIx(), pks[j].getIy()))
                     if heavy is None:
@@ -347,14 +350,15 @@ class SourceDeblendTask(pipeBase.Task):
                 assert(len(heavy.getPeaks()) == 1)
 
                 src.set(self.deblendSkippedKey, False)
-                child = srcs.addNew(); nchild += 1
+                child = srcs.addNew()
+                nchild += 1
                 child.assign(heavy.getPeaks()[0], self.peakSchemaMapper)
                 child.setParent(src.getId())
                 child.setFootprint(heavy)
                 child.set(self.psfKey, peak.deblendedAsPsf)
                 child.set(self.hasStrayFluxKey, peak.strayFlux is not None)
                 if peak.deblendedAsPsf:
-                    (cx,cy) = peak.psfFitCenter
+                    (cx, cy) = peak.psfFitCenter
                     child.set(self.psfCenterKey, afwGeom.Point2D(cx, cy))
                     child.set(self.psfFluxKey, peak.psfFitFlux)
                 child.set(self.deblendRampedTemplateKey, peak.hasRampedTemplate)
@@ -371,8 +375,7 @@ class SourceDeblendTask(pipeBase.Task):
             src.set(self.nChildKey, nchild)
 
             self.postSingleDeblendHook(exposure, srcs, i, npre, kids, fp, psf, psf_fwhm, sigma1, res)
-            #print 'Deblending parent id', src.getId(), 'took', time.clock() - t0
-
+            # print 'Deblending parent id', src.getId(), 'took', time.clock() - t0
 
         n1 = len(srcs)
         self.log.info('Deblended: of %i sources, %i were deblended, creating %i children, total %i sources'
@@ -412,7 +415,7 @@ class SourceDeblendTask(pipeBase.Task):
         for maskName, limit in self.config.maskLimits.iteritems():
             maskVal = mask.getPlaneBitMask(maskName)
             unmasked = afwDet.Footprint(footprint)
-            unmasked.intersectMask(mask, maskVal) # footprint of unmasked pixels
+            unmasked.intersectMask(mask, maskVal)  # footprint of unmasked pixels
             if (size - unmasked.getArea())/size > limit:
                 return True
         return False
@@ -427,7 +430,7 @@ class SourceDeblendTask(pipeBase.Task):
         """
         fp = source.getFootprint()
         source.set(self.deblendSkippedKey, True)
-        source.set(self.nChildKey, len(fp.getPeaks())) # It would have this many if we deblended them all
+        source.set(self.nChildKey, len(fp.getPeaks()))  # It would have this many if we deblended them all
         if self.config.notDeblendedMask:
             mask.addMaskPlane(self.config.notDeblendedMask)
             afwDet.setMaskFromFootprint(mask, fp, mask.getPlaneBitMask(self.config.notDeblendedMask))

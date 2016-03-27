@@ -40,6 +40,8 @@ except NameError:
 DATA_DIR = os.path.join(os.environ["MEAS_DEBLENDER_DIR"], "tests", "data")
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
 class IncludeTestCase(lsst.utils.tests.TestCase):
     """ Test case for DM-1738: test that include method successfully
     expands footprint to include the union of itself and all others provided.
@@ -108,6 +110,7 @@ class IncludeTestCase(lsst.utils.tests.TestCase):
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+
 def suite():
     """Returns a suite containing all the test cases in this module."""
 
@@ -117,6 +120,7 @@ def suite():
     suites += unittest.makeSuite(IncludeTestCase)
     suites += unittest.makeSuite(lsst.utils.tests.MemoryTestCase)
     return unittest.TestSuite(suites)
+
 
 def run(shouldExit=False):
     """Run the tests"""
